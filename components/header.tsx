@@ -1,57 +1,65 @@
+// components/Navbar.tsx
 "use client";
 
-import React, { useState } from "react";
+import { useState } from "react";
 import Link from "next/link";
 
-export function Navbar() {
-  // Track auth state (replace later with real auth, e.g. NextAuth)
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
-
-  const handleAuth = () => {
-    if (isLoggedIn) {
-      // Logout
-      setIsLoggedIn(false);
-    } else {
-      // Login (in real app you'd redirect to sign in page)
-      setIsLoggedIn(true);
-    }
-  };
+export default function Navbar() {
+  const [open, setOpen] = useState(false);
 
   return (
-    <nav className="flex items-center justify-between px-6 py-4 bg-[#0f172a] text-white shadow-md">
-      {/* Left side: Brand + Links */}
-      <div className="flex items-center gap-8">
-        <Link
-          href="/"
-          className="text-2xl font-bold tracking-wide hover:text-indigo-400"
-        >
+    <header className="p-4 md:p-5 bg-gradient-to-r from-black via-gray-900 to-indigo-900 text-white shadow-md">
+      <div className="container mx-auto flex items-center justify-between">
+        {/* Logo */}
+        <div className="font-bold text-2xl tracking-wide cursor-pointer hover:text-indigo-400 transition">
           ANIMAZE
-        </Link>
+        </div>
 
-        <Link
-          href="/anime/topanime"
-          className="text-lg font-medium hover:text-indigo-400"
-        >
-          Top Anime
-        </Link>
-
-        <Link
-          href="/anime"
-          className="text-lg font-medium hover:text-indigo-400"
-        >
-          Browse
-        </Link>
-      </div>
-
-      {/* Right side: Sign In / Logout button */}
-      <div>
+        {/* Hamburger – visible only on small screens */}
         <button
-          onClick={handleAuth}
-          className="px-4 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-700 transition duration-200 shadow"
+          className="md:hidden p-1 rounded focus:outline-none focus:ring-2 focus:ring-indigo-400"
+          onClick={() => setOpen(!open)}
+          aria-label="Toggle menu"
         >
-          {isLoggedIn ? "Logout" : "Sign In"}
+          <svg
+            className="w-7 h-7"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d={open ? "M6 18L18 6M6 6l12 12" : "M4 6h16M4 12h16M4 18h16"}
+            />
+          </svg>
         </button>
+
+        {/* Links – horizontal on md+, stacked on mobile when open */}
+        <nav
+          className={`${
+            open ? "block" : "hidden"
+          } absolute top-16 left-0 w-full  md:static md:w-auto md:block`}
+        >
+          <ul className="flex flex-col md:flex-row md:space-x-8 p-4 md:p-0 font-medium">
+            {[
+              { name: "Home", path: "/" },
+              { name: "Top Anime", path: "/anime/topanime" },
+              { name: "Browse", path: "/anime" },
+              { name: "Sign In", path: "/signin" },
+            ].map((item) => (
+              <li key={item.name}>
+                <Link href={item.path}>
+                  <span className="block py-2 md:py-0 hover:text-indigo-400 transition cursor-pointer">
+                    {item.name}
+                  </span>
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </nav>
       </div>
-    </nav>
+    </header>
   );
 }

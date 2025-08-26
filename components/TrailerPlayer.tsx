@@ -3,17 +3,20 @@ import { useEffect } from "react";
 
 export default function TrailerPlayer({ videoId }: { videoId: string }) {
   useEffect(() => {
-    // Load the YouTube IFrame API script
-    const tag = document.createElement("script");
-    tag.src = "https://www.youtube.com/iframe_api";
-    document.body.appendChild(tag);
+    const loadYouTubeAPI = () => {
+      if ((window as any).YT && (window as any).YT.Player) {
+        createPlayer();
+      } else {
+        (window as any).onYouTubeIframeAPIReady = createPlayer;
+      }
+    };
 
-    (window as any).onYouTubeIframeAPIReady = () => {
+    const createPlayer = () => {
       new (window as any).YT.Player("yt-player", {
         videoId,
         playerVars: {
           autoplay: 1,
-          mute: 1, // 👈 required for autoplay
+          mute: 1,
           controls: 0,
           rel: 0,
           modestbranding: 1,
@@ -26,6 +29,16 @@ export default function TrailerPlayer({ videoId }: { videoId: string }) {
         },
       });
     };
+
+    // Load script only once
+    if (!document.querySelector("#youtube-iframe-api")) {
+      const tag = document.createElement("script");
+      tag.src = "https://www.youtube.com/iframe_api";
+      tag.id = "youtube-iframe-api";
+      document.body.appendChild(tag);
+    }
+
+    loadYouTubeAPI();
   }, [videoId]);
 
   return (

@@ -39,8 +39,10 @@ export default function Navbar() {
         {/* Links – horizontal on md+, stacked on mobile when open */}
         <nav
           className={`${
-            open ? "block" : "hidden"
-          } absolute top-16 left-0 w-full  md:static md:w-auto md:block`}
+            open
+              ? "absolute top-16 left-0 w-full bg-gradient-to-r from-black via-gray-900 to-indigo-900 z-50"
+              : "hidden"
+          } md:static md:block md:w-auto md:bg-transparent`}
         >
           <ul className="flex flex-col md:flex-row md:space-x-8 p-4 md:p-0 font-medium">
             {[

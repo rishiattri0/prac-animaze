@@ -75,7 +75,7 @@ export default function TopAnime() {
           📊 Top Anime
         </h1>
 
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6">
           {animeList.map((anime) => (
             <Link href={`/anime/${anime.mal_id}`} key={anime.mal_id}>
               <div className="bg-black rounded-xl shadow p-4 flex flex-col shadow-cyan-100/40 hover:shadow-cyan-300/70 hover:-translate-y-2 transform transition duration-300">

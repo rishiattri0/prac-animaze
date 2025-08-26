@@ -1,6 +1,7 @@
 import { notFound } from "next/navigation";
 import Image from "next/image";
 import { Header2 } from "@/components/header2";
+import TrailerPlayer from "@/components/TrailerPlayer";
 
 type AnimeDetails = {
   mal_id: number;
@@ -12,6 +13,9 @@ type AnimeDetails = {
     jpg: {
       large_image_url: string;
     };
+  };
+  trailer?: {
+    youtube_id?: string;
   };
 };
 
@@ -26,9 +30,9 @@ async function getAnime(id: string): Promise<AnimeDetails | null> {
 export default async function AnimeDetailsPage({
   params,
 }: {
-  params: Promise<{ id: string }>; // 👈 FIX: params is a Promise
+  params: { id: string };
 }) {
-  const { id } = await params; // 👈 Await it before use
+  const { id } = params;
   const anime = await getAnime(id);
 
   if (!anime) return notFound();
@@ -47,14 +51,18 @@ export default async function AnimeDetailsPage({
 
           {/* Content */}
           <div className="p-6 flex flex-col md:flex-row gap-8">
-            {/* Poster */}
-            <Image
-              src={anime.images.jpg.large_image_url}
-              alt={anime.title}
-              width={300}
-              height={400}
-              className="rounded-xl shadow-lg border border-indigo-800/40"
-            />
+            {/* Trailer or Poster */}
+            {anime.trailer?.youtube_id ? (
+              <TrailerPlayer videoId={anime.trailer.youtube_id} />
+            ) : (
+              <Image
+                src={anime.images.jpg.large_image_url}
+                alt={anime.title}
+                width={300}
+                height={400}
+                className="rounded-xl shadow-lg border border-indigo-800/40"
+              />
+            )}
 
             {/* Info */}
             <div className="flex-1 space-y-4">

@@ -39,7 +39,6 @@ export default async function AnimeDetailsPage({
 
   return (
     <div>
-      <Header2 />
       <div className="min-h-screen bg-gradient-to-br from-black via-[#0a0f1f] to-indigo-900 text-gray-100 p-8">
         <div className="max-w-8xl mx-auto bg-[#0d1324]/80 backdrop-blur-md border border-indigo-800/40 rounded-2xl shadow-xl overflow-hidden">
           {/* Title */}

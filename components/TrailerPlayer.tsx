@@ -3,6 +3,7 @@ import { useEffect } from "react";
 
 export default function TrailerPlayer({ videoId }: { videoId: string }) {
   useEffect(() => {
+    // Load the YouTube IFrame API script
     const tag = document.createElement("script");
     tag.src = "https://www.youtube.com/iframe_api";
     document.body.appendChild(tag);
@@ -12,7 +13,7 @@ export default function TrailerPlayer({ videoId }: { videoId: string }) {
         videoId,
         playerVars: {
           autoplay: 1,
-          mute: 1,
+          mute: 1, // 👈 required for autoplay
           controls: 0,
           rel: 0,
           modestbranding: 1,
@@ -28,8 +29,8 @@ export default function TrailerPlayer({ videoId }: { videoId: string }) {
   }, [videoId]);
 
   return (
-    <div className="w-full md:w-[600px] aspect-video rounded-xl overflow-hidden shadow-lg border border-indigo-800/40">
-      <div id="yt-player" />
+    <div className="relative w-full max-w-3xl aspect-video rounded-xl overflow-hidden shadow-lg border border-indigo-800/40">
+      <div id="yt-player" className="absolute top-0 left-0 w-full h-full" />
     </div>
   );
 }

@@ -1,10 +1,11 @@
 import Link from "next/link";
 import { Header1 } from "@/components/header1";
+import { Header } from "@/components/header";
 
 export default function Home() {
   return (
     <div>
-      <Header1 />
+      <Header />
       <main className="flex flex-col items-center justify-center min-h-screen bg-gradient-to-r from-black to-indigo-800 text-white">
         <h1 className="text-5xl font-bold mb-6">Seasonal Anime Tracker</h1>
         <p className="mb-4 text-lg">

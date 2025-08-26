@@ -2,7 +2,8 @@
 
 import { useEffect, useRef, useState } from "react";
 import { Header } from "@/components/header";
-
+import Link from "next/link";
+import { Header1 } from "@/components/header1";
 export default function AnimePage() {
   const [animeList, setAnimeList] = useState<any[]>([]);
   const [page, setPage] = useState(1);
@@ -97,29 +98,30 @@ export default function AnimePage() {
       <Header />
       <main className="p-8 grid grid-cols-2 md:grid-cols-4 gap-6">
         {animeList.map((anime) => (
-          <div
-            key={anime.mal_id}
-            className="bg-black rounded-xl shadow p-4 flex flex-col shadow-cyan-100/100"
-          >
-            <div className="w-full aspect-[3/4] overflow-hidden rounded-lg ">
-              <img
-                src={anime.images?.jpg.large_image_url}
-                alt={anime.title}
-                width={500}
-                height={400}
-                className="object-cover w-full h-full"
-                loading="lazy"
-              />
-            </div>
-            <h2
-              className="font-bold text-center mt-2 truncate"
-              title={anime.title}
+          <Link href={`/anime/${anime.mal_id}`} key={anime.mal_id}>
+            <div
+              key={anime.mal_id}
+              className="bg-black rounded-xl shadow p-4 flex flex-col shadow-cyan-100/100 hover:scale-105 transition"
             >
-              {anime.title}
-            </h2>
-            <p className="text-center">Episodes: {anime.episodes ?? "?"}</p>
-            <p className="text-center">Status: {anime.status}</p>
-          </div>
+              <div className="w-full aspect-[3/4] overflow-hidden rounded-lg">
+                <img
+                  src={anime.images.jpg.large_image_url}
+                  alt={anime.title}
+                  width={300}
+                  height={400}
+                  className="object-cover w-full h-full"
+                />
+              </div>
+              <h2
+                className="font-bold text-center mt-2 truncate"
+                title={anime.title}
+              >
+                {anime.title}
+              </h2>
+              <p className="text-center">Episodes: {anime.episodes ?? "?"}</p>
+              <p className="text-center">Status: {anime.status}</p>
+            </div>
+          </Link>
         ))}
 
         {/* Invisible sentinel */}

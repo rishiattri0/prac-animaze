@@ -10,10 +10,11 @@ export default function Navbar() {
   return (
     <header className="p-4 md:p-5 bg-gradient-to-r from-black via-gray-900 to-indigo-900 text-white shadow-md">
       <div className="container mx-auto flex items-center justify-between">
-        {/* Logo */}
-        <div className="font-bold text-2xl tracking-wide cursor-pointer hover:text-indigo-400 transition">
-          ANIMAZE
-        </div>
+        <Link href="/">
+          <div className="font-bold text-2xl tracking-wide cursor-pointer hover:text-indigo-400 transition">
+            ANIMAZE
+          </div>
+        </Link>
 
         {/* Hamburger – visible only on small screens */}
         <button

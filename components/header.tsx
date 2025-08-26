@@ -3,7 +3,7 @@ import Link from "next/link";
 
 export function Header() {
   return (
-    <div className="flex items-center justify-between px-6 py-4 bg-gray-900 text-white shadow-md fixed inset-x-0 top-0 left-0 ab">
+    <div className="flex items-center justify-between px-6 py-4 bg-gray-900 text-white shadow-md ">
       {/* Left side: Brand + Links */}
       <div className="flex items-center gap-8">
         <div className="text-2xl font-bold tracking-wide hover:text-indigo-400 cursor-pointer">

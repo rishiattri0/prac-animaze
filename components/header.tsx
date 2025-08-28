@@ -1,29 +1,41 @@
-// components/Navbar.tsx
 "use client";
 
 import { useState } from "react";
 import Link from "next/link";
+import { cn } from "@/lib/utils"; // keep your utility
 
 export default function Navbar() {
   const [open, setOpen] = useState(false);
 
+  const links = [
+    { name: "Home", path: "/" },
+    { name: "Top Anime", path: "/anime/topanime" },
+    { name: "Browse", path: "/anime" },
+    { name: "Sign In", path: "/signin" },
+  ];
+
   return (
-    <header className="p-4 md:p-5 bg-gradient-to-r from-black via-gray-900 to-indigo-900 text-white shadow-md">
-      <div className="container mx-auto flex items-center justify-between">
+    <header className="bg-gradient-to-r from-black via-gray-950 to-blue-950 text-white shadow-lg shadow-blue-900/30 backdrop-blur-md fixed w-full top-0 z-50 mb-5">
+      <div className="container mx-auto flex items-center justify-between px-4 py-4 md:px-6">
+        {/* Logo */}
         <Link href="/">
-          <div className="font-bold text-2xl tracking-wide cursor-pointer hover:text-indigo-400 transition">
+          <div
+            className="font-extrabold text-2xl tracking-wide cursor-pointer 
+            bg-gradient-to-r from-sky-400 via-indigo-400 to-blue-500 bg-clip-text text-transparent 
+            hover:drop-shadow-[0_0_12px_rgba(56,189,248,0.8)] transition"
+          >
             ANIMAZE
           </div>
         </Link>
 
-        {/* Hamburger – visible only on small screens */}
+        {/* Hamburger – only mobile */}
         <button
-          className="md:hidden p-1 rounded focus:outline-none focus:ring-2 focus:ring-indigo-400"
+          className="md:hidden p-2 rounded focus:outline-none focus:ring-2 focus:ring-sky-400"
           onClick={() => setOpen(!open)}
           aria-label="Toggle menu"
         >
           <svg
-            className="w-7 h-7"
+            className="w-7 h-7 text-sky-300"
             fill="none"
             stroke="currentColor"
             viewBox="0 0 24 24"
@@ -32,35 +44,35 @@ export default function Navbar() {
               strokeLinecap="round"
               strokeLinejoin="round"
               strokeWidth={2}
-              d={open ? "M6 18L18 6M6 6l12 12" : "M4 6h16M4 12h16M4 18h16"}
+              d={
+                open
+                  ? "M6 18L18 6M6 6l12 12" // close icon
+                  : "M4 6h16M4 12h16M4 18h16" // hamburger
+              }
             />
           </svg>
         </button>
 
-        {/* Links – horizontal on md+, stacked on mobile when open */}
+        {/* Links */}
         <nav
-          className={`${
+          className={cn(
+            "absolute md:static left-0 w-full md:w-auto flex-col md:flex md:flex-row md:space-x-10 font-medium transition-all duration-300 ease-in-out overflow-hidden",
             open
-              ? "absolute top-16 left-0 w-full bg-gradient-to-r from-black via-gray-900 to-indigo-900 z-50"
-              : "hidden"
-          } md:static md:block md:w-auto md:bg-transparent`}
+              ? "top-16 opacity-100 bg-gradient-to-r from-black via-gray-950 to-blue-950 z-50 py-4"
+              : "top-[-400px] opacity-0 md:opacity-100 md:top-auto md:bg-transparent"
+          )}
         >
-          <ul className="flex flex-col md:flex-row md:space-x-8 p-4 md:p-0 font-medium">
-            {[
-              { name: "Home", path: "/" },
-              { name: "Top Anime", path: "/anime/topanime" },
-              { name: "Browse", path: "/anime" },
-              { name: "Sign In", path: "/signin" },
-            ].map((item) => (
-              <li key={item.name}>
-                <Link href={item.path}>
-                  <span className="block py-2 md:py-0 hover:text-indigo-400 transition cursor-pointer">
-                    {item.name}
-                  </span>
-                </Link>
-              </li>
-            ))}
-          </ul>
+          {links.map((item) => (
+            <Link key={item.name} href={item.path}>
+              <span
+                className="block px-6 py-2 md:px-0 md:py-0 
+                text-gray-300 hover:text-sky-400 transition duration-200 cursor-pointer 
+                hover:drop-shadow-[0_0_8px_rgba(56,189,248,0.7)]"
+              >
+                {item.name}
+              </span>
+            </Link>
+          ))}
         </nav>
       </div>
     </header>

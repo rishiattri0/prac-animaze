@@ -45,7 +45,7 @@ export default function LandingPage() {
   return (
     <main className="flex flex-col items-center justify-center min-h-screen bg-gradient-to-b from-black via-indigo-950 to-indigo-900 text-white">
       {/* Hero Section */}
-      <section className="text-center mt-16 px-4">
+      <section className="text-center mt-20 px-4">
         <TypingAnimation>Seasonal Anime Tracker</TypingAnimation>
 
         <p className="mt-4 text-lg text-gray-300 max-w-xl mx-auto">

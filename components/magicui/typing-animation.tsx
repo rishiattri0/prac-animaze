@@ -74,7 +74,9 @@ export function TypingAnimation({
     <MotionComponent
       ref={elementRef}
       className={cn(
-        "text-5xl md:text-7xl font-extrabold leading-[5rem] tracking-[-0.02em]",
+        "text-5xl md:text-7xl font-extrabold tracking-tight leading-[4.5rem]",
+        "bg-gradient-to-r from-sky-400 via-indigo-400 to-blue-500 bg-clip-text text-transparent",
+        "drop-shadow-[0_2px_18px_rgba(56,189,248,0.45)]", // cyan glow
         className
       )}
       {...props}

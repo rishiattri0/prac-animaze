@@ -28,7 +28,7 @@ export default function TopAiringCarousel({ animes }: { animes: AnimeItem[] }) {
   const go = (step: number) => setIndex((i) => (i + step + count) % count);
 
   return (
-    <section className="px-6">
+    <section className="px-6 mb-3">
       <div className="max-w-6xl mx-auto">
         <div className="flex flex-col md:flex-row items-center justify-center gap-8">
           {/* Poster carousel */}

@@ -5,7 +5,8 @@ import { CardCarousel } from "@/components/ui/card-carousel";
 import Button from "@/components/button";
 import Link from "next/link";
 import FlipLink from "@/components/ui/text-effect-flipper";
-
+import { TextAnimate } from "@/components/magicui/text-animate";
+import { TypingAnimation } from "@/components/magicui/typing-animation";
 interface Anime {
   mal_id: number;
   title: string;
@@ -45,10 +46,8 @@ export default function LandingPage() {
     <main className="flex flex-col items-center justify-center min-h-screen bg-gradient-to-b from-black via-indigo-950 to-indigo-900 text-white">
       {/* Hero Section */}
       <section className="text-center mt-16 px-4">
-        <h1 className="text-5xl md:text-7xl font-bold">
-          Seasonal <span className="text-indigo-400 drop-shadow-md">Anime</span>{" "}
-          Tracker
-        </h1>
+        <TypingAnimation>Seasonal Anime Tracker</TypingAnimation>
+
         <p className="mt-4 text-lg text-gray-300 max-w-xl mx-auto">
           Stay updated with the latest anime releases, rankings and more.
         </p>

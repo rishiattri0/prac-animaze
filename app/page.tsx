@@ -4,7 +4,9 @@ import Link from "next/link";
 
 async function getTopAnime() {
   try {
-    const res = await fetch("https://api.jikan.moe/v4/top/anime?filter=airing");
+    const res = await fetch(
+      "https://api.jikan.moe/v4/top/anime?filter=bypopularity"
+    );
     const data = await res.json();
     return data.data.map((anime: any) => ({
       title: anime.title,

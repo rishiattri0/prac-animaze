@@ -2,6 +2,9 @@
 
 import { useEffect, useState } from "react";
 import { CardCarousel } from "@/components/ui/card-carousel";
+import Button from "@/components/button";
+import Link from "next/link";
+import FlipLink from "@/components/ui/text-effect-flipper";
 
 interface Anime {
   mal_id: number;
@@ -39,21 +42,22 @@ export default function LandingPage() {
   }, []);
 
   return (
-    <main className="flex flex-col items-center justify-center min-h-screen">
+    <main className="flex flex-col items-center justify-center min-h-screen bg-gradient-to-b from-black via-indigo-950 to-indigo-900 text-white">
       {/* Hero Section */}
-      <section className="text-center mt-16">
-        <h1 className="text-5xl font-bold">
-          Seasonal <span className="text-indigo-400">Anime</span> Tracker
+      <section className="text-center mt-16 px-4">
+        <h1 className="text-5xl md:text-7xl font-bold">
+          Seasonal <span className="text-indigo-400 drop-shadow-md">Anime</span>{" "}
+          Tracker
         </h1>
-        <p className="mt-4 text-lg text-gray-300">
-          Stay updated with the latest anime releases.
+        <p className="mt-4 text-lg text-gray-300 max-w-xl mx-auto">
+          Stay updated with the latest anime releases, rankings and more.
         </p>
-        <button className="mt-6 px-6 py-3 bg-indigo-600 text-white rounded-xl">
-          Sign in to Continue
-        </button>
+        <Link href="/signin">
+          <Button />
+        </Link>
       </section>
 
-      {/* Features Section (your previous feature cards here) */}
+      {/* Features Section (cards etc.) */}
 
       {/* Popular Anime Carousel */}
       <section className="mt-20 w-full max-w-5xl">

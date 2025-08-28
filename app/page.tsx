@@ -1,45 +1,67 @@
-import Button from "@/components/button";
-import TopAiringCarousel from "@/components/TopAiringCarousel";
-import Link from "next/link";
+"use client";
 
-async function getTopAnime() {
-  try {
-    const res = await fetch(
-      "https://api.jikan.moe/v4/top/anime?filter=bypopularity"
-    );
-    const data = await res.json();
-    return data.data.map((anime: any) => ({
-      title: anime.title,
-      image_url: anime.images.jpg.large_image_url,
-    }));
-  } catch (err) {
-    console.error("Failed to fetch anime:", err);
-    return [];
-  }
+import { useEffect, useState } from "react";
+import { CardCarousel } from "@/components/ui/card-carousel";
+
+interface Anime {
+  mal_id: number;
+  title: string;
+  images: {
+    jpg: {
+      large_image_url: string;
+    };
+  };
 }
 
-export default async function HomePage() {
-  const animes = await getTopAnime();
+export default function LandingPage() {
+  const [animeImages, setAnimeImages] = useState<
+    { src: string; alt: string }[]
+  >([]);
+
+  useEffect(() => {
+    const fetchPopularAnime = async () => {
+      try {
+        const res = await fetch(
+          "https://api.jikan.moe/v4/top/anime?filter=favorite&limit=10"
+        );
+        const data = await res.json();
+        const formatted = data.data.map((anime: Anime) => ({
+          src: anime.images.jpg.large_image_url,
+          alt: anime.title,
+        }));
+        setAnimeImages(formatted);
+      } catch (error) {
+        console.error("Error fetching popular anime:", error);
+      }
+    };
+
+    fetchPopularAnime();
+  }, []);
 
   return (
-    <main className="min-h-screen bg-gradient-to-b from-black via-[#0f172a] to-[#1e1b4b] text-white">
+    <main className="flex flex-col items-center justify-center min-h-screen">
       {/* Hero Section */}
-      <section className="text-center pt-20 pb-10">
-        <h1 className="text-5xl font-extrabold">
+      <section className="text-center mt-16">
+        <h1 className="text-5xl font-bold">
           Seasonal <span className="text-indigo-400">Anime</span> Tracker
         </h1>
-        <p className="text-gray-300 mt-4">
-          Stay updated with the latest anime releases and never miss an episode
-          this season.
+        <p className="mt-4 text-lg text-gray-300">
+          Stay updated with the latest anime releases.
         </p>
-        <Link href="/signin">
-          <Button />
-        </Link>
+        <button className="mt-6 px-6 py-3 bg-indigo-600 text-white rounded-xl">
+          Sign in to Continue
+        </button>
       </section>
 
-      {/* Top Airing Carousel */}
-      <section className="max-w-6xl mx-auto px-6">
-        <TopAiringCarousel animes={animes} />
+      {/* Features Section (your previous feature cards here) */}
+
+      {/* Popular Anime Carousel */}
+      <section className="mt-20 w-full max-w-5xl">
+        {animeImages.length > 0 ? (
+          <CardCarousel images={animeImages} autoplayDelay={2000} />
+        ) : (
+          <p className="text-gray-400">Loading popular anime...</p>
+        )}
       </section>
     </main>
   );

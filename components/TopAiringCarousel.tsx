@@ -28,9 +28,9 @@ export default function TopAiringCarousel({ animes }: { animes: AnimeItem[] }) {
   const go = (step: number) => setIndex((i) => (i + step + count) % count);
 
   return (
-    <section className="py-12 px-6">
+    <section className="px-6">
       <div className="max-w-6xl mx-auto">
-        <div className="flex flex-col md:flex-row items-center justify-center gap-10">
+        <div className="flex flex-col md:flex-row items-center justify-center gap-8">
           {/* Poster carousel */}
           <div className="relative w-[280px] md:w-[340px] aspect-[2/3] rounded-2xl overflow-hidden shadow-2xl">
             {animes.map((a, i) => (
@@ -82,7 +82,7 @@ export default function TopAiringCarousel({ animes }: { animes: AnimeItem[] }) {
           </div>
 
           {/* Features Section with animation */}
-          <div className="flex flex-col gap-6 max-w-md w-full">
+          <div className="flex flex-col gap-6 max-w-md w-full cursor-pointer">
             {/* Track Episodes */}
             <motion.div
               initial={{ opacity: 0, x: 50 }}
@@ -90,7 +90,7 @@ export default function TopAiringCarousel({ animes }: { animes: AnimeItem[] }) {
               transition={{ duration: 0.5, delay: 0.2 }}
               viewport={{ once: true }}
             >
-              <Card className="bg-[#0f172a] text-white border-none shadow-md rounded-2xl hover:scale-105 transition-transform">
+              <Card className="bg-[#0f172a] text-white border-none shadow-md rounded-2xl hover:scale-105 transition-transform shadow-cyan-500/50">
                 <CardContent className="flex items-center gap-4 p-6">
                   <Tv className="w-6 h-6 text-indigo-400" />
                   <div>
@@ -111,7 +111,7 @@ export default function TopAiringCarousel({ animes }: { animes: AnimeItem[] }) {
               transition={{ duration: 0.5, delay: 0.3 }}
               viewport={{ once: true }}
             >
-              <Card className="bg-[#0f172a] text-white border-none shadow-md rounded-2xl hover:scale-105 transition-transform">
+              <Card className="bg-[#0f172a] text-white border-none shadow-md rounded-2xl hover:scale-105 transition-transform shadow-cyan-500/50">
                 <CardContent className="flex items-center gap-4 p-6">
                   <Flame className="w-6 h-6 text-orange-400" />
                   <div>
@@ -132,7 +132,7 @@ export default function TopAiringCarousel({ animes }: { animes: AnimeItem[] }) {
               transition={{ duration: 0.5, delay: 0.4 }}
               viewport={{ once: true }}
             >
-              <Card className="bg-[#0f172a] text-white border-none shadow-md rounded-2xl hover:scale-105 transition-transform">
+              <Card className="bg-[#0f172a] text-white border-none shadow-md rounded-2xl hover:scale-105 transition-transform shadow-cyan-500/50">
                 <CardContent className="flex items-center gap-4 p-6">
                   <Star className="w-6 h-6 text-yellow-400" />
                   <div>

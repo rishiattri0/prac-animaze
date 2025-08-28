@@ -1,4 +1,6 @@
+import Button from "@/components/button";
 import TopAiringCarousel from "@/components/TopAiringCarousel";
+import Link from "next/link";
 
 async function getTopAnime() {
   try {
@@ -20,7 +22,7 @@ export default async function HomePage() {
   return (
     <main className="min-h-screen bg-gradient-to-b from-black via-[#0f172a] to-[#1e1b4b] text-white">
       {/* Hero Section */}
-      <section className="text-center py-20">
+      <section className="text-center pt-20 pb-10">
         <h1 className="text-5xl font-extrabold">
           Seasonal <span className="text-indigo-400">Anime</span> Tracker
         </h1>
@@ -28,9 +30,9 @@ export default async function HomePage() {
           Stay updated with the latest anime releases and never miss an episode
           this season.
         </p>
-        <button className="mt-6 px-6 py-3 bg-indigo-600 rounded-xl hover:bg-indigo-700 transition">
-          Sign in to Continue
-        </button>
+        <Link href="/signin">
+          <Button />
+        </Link>
       </section>
 
       {/* Top Airing Carousel */}

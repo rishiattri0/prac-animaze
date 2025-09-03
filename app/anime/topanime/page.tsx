@@ -69,7 +69,7 @@ export default function TopAnime() {
 
   return (
     <div>
-      <main className="p-8 bg-gradient-to-b from-black to-indigo-950 min-h-screen">
+      <main className="p-8 bg-gradient-to-b from-black to-indigo-950 min-h-screen ">
         <h1 className="text-3xl font-bold text-indigo-200 mb-8">
           📊 Top Anime
         </h1>

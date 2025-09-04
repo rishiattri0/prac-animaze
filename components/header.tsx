@@ -30,7 +30,8 @@ export default function Navbar() {
   const links = [
     { name: "Home", path: "/" },
     { name: "Top Anime", path: "/anime/topanime" },
-    { name: "Browse", path: "/anime" },
+    { name: "Airing", path: "/anime" },
+    { name: "Manga", path: "/manga" },
     { name: "Sign In", path: "/signin" },
   ];
 

@@ -99,7 +99,9 @@ export default function MangaPage() {
 
   return (
     <div>
-      <Header1>📚 Top Manga</Header1>
+      <h1 className="text-3xl font-extrabold text-indigo-200 mb-8 p-7">
+        Manga
+      </h1>
 
       <main className="p-8 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6">
         {mangaList.map((manga) => (

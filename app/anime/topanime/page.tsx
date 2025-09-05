@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { Header2 } from "@/components/header2";
+import SaveToListButton from "@/components/SaveToListButton";
 
 interface Anime {
   mal_id: number;
@@ -70,8 +71,8 @@ export default function TopAnime() {
   return (
     <div>
       <main className="p-8 bg-gradient-to-b from-black to-indigo-950 min-h-screen ">
-        <h1 className="text-3xl font-bold text-indigo-200 mb-8">
-          📊 Top Anime
+        <h1 className="text-3xl font-extrabold text-indigo-200 mb-8">
+          Top Anime
         </h1>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6">
@@ -99,6 +100,7 @@ export default function TopAnime() {
                 <p className="text-center text-gray-400 text-sm">
                   Status: {anime.status}
                 </p>
+                <SaveToListButton anime={anime} />
               </div>
             </Link>
           ))}

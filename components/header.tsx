@@ -32,6 +32,7 @@ export default function Navbar() {
     { name: "Top Anime", path: "/anime/topanime" },
     { name: "Airing", path: "/anime" },
     { name: "Manga", path: "/manga" },
+    { name: "MyList", path: "/anime/mylist" },
     { name: "Sign In", path: "/signin" },
   ];
 

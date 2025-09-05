@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import SaveToListButton from "@/components/SaveToListButton";
 
 import Link from "next/link";
 import { Header1 } from "@/components/header1";
@@ -119,6 +120,7 @@ export default function AnimePage() {
               </h2>
               <p className="text-center">Episodes: {anime.episodes ?? "?"}</p>
               <p className="text-center">Status: {anime.status}</p>
+              <SaveToListButton anime={anime} />
             </div>
           </Link>
         ))}

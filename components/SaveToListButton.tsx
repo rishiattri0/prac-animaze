@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { motion } from "framer-motion";
 
 type Anime = {
   mal_id: number;
@@ -16,6 +17,7 @@ type Anime = {
 
 export default function SaveToListButton({ anime }: { anime: Anime }) {
   const [inList, setInList] = useState(false);
+  const [justChanged, setJustChanged] = useState(false);
 
   // Check if anime is already saved
   useEffect(() => {
@@ -35,28 +37,40 @@ export default function SaveToListButton({ anime }: { anime: Anime }) {
       const updated = current.filter((a: Anime) => a.mal_id !== anime.mal_id);
       localStorage.setItem("myAnimeList", JSON.stringify(updated));
       setInList(false);
-      alert("Removed from your list ❌");
     } else {
       // Add
       localStorage.setItem("myAnimeList", JSON.stringify([...current, anime]));
       setInList(true);
-      alert("Added to your list 🎉");
     }
+
+    // Trigger animation
+    setJustChanged(true);
+    setTimeout(() => setJustChanged(false), 1000);
   };
 
   return (
-    <button
+    <motion.button
       onClick={(e) => {
-        e.preventDefault(); // Prevent Link navigation
+        e.preventDefault(); // prevent Link navigation
         handleToggle();
       }}
-      className={`mt-2 py-1 px-3 rounded-lg text-sm transition ${
+      whileTap={{ scale: 0.9 }}
+      animate={
+        justChanged
+          ? {
+              scale: [1, 1.2, 1],
+              backgroundColor: inList ? "#dc2626" : "#4f46e5",
+            }
+          : {}
+      }
+      transition={{ duration: 0.4 }}
+      className={`mt-2 py-1 px-3 rounded-lg text-sm text-white transition ${
         inList
-          ? "bg-red-600 hover:bg-red-700 text-white"
-          : "bg-indigo-600 hover:bg-indigo-700 text-white"
+          ? "bg-red-600 hover:bg-red-700"
+          : "bg-indigo-600 hover:bg-indigo-700"
       }`}
     >
       {inList ? "❌ Remove from List" : "➕ Add to My List"}
-    </button>
+    </motion.button>
   );
 }

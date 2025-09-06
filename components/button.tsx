@@ -21,9 +21,9 @@ export default function Button() {
             >
               <path
                 d="M9 5l7 7-7 7"
-                stroke-width="2"
-                stroke-linejoin="round"
-                stroke-linecap="round"
+                strokeWidth="2"
+                strokeLinejoin="round"
+                strokeLinecap="round"
               ></path>
             </svg>
           </div>

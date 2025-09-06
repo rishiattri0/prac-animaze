@@ -4,15 +4,14 @@ import { useEffect, useState } from "react";
 import { CardCarousel } from "@/components/ui/card-carousel";
 import Button from "@/components/button";
 import Link from "next/link";
-import FlipLink from "@/components/ui/text-effect-flipper";
-import { TextAnimate } from "@/components/magicui/text-animate";
 import { TypingAnimation } from "@/components/magicui/typing-animation";
+
 interface Anime {
   mal_id: number;
   title: string;
   images: {
     jpg: {
-      large_image_url: string;
+      image_url: string;
     };
   };
 }
@@ -25,15 +24,18 @@ export default function LandingPage() {
   useEffect(() => {
     const fetchPopularAnime = async () => {
       try {
-        const res = await fetch(
-          "https://api.jikan.moe/v4/top/anime?filter=favorite&limit=10"
-        );
+        const res = await fetch("/api/anime/popular"); // ✅ use your proxy
         const data = await res.json();
-        const formatted = data.data.map((anime: Anime) => ({
-          src: anime.images.jpg.large_image_url,
-          alt: anime.title,
-        }));
-        setAnimeImages(formatted);
+
+        if (Array.isArray(data?.data)) {
+          const formatted = data.data.map((anime: Anime) => ({
+            src: anime.images.jpg.image_url,
+            alt: anime.title,
+          }));
+          setAnimeImages(formatted);
+        } else {
+          console.error("Unexpected response:", data);
+        }
       } catch (error) {
         console.error("Error fetching popular anime:", error);
       }
@@ -51,12 +53,11 @@ export default function LandingPage() {
         <p className="mt-4 text-lg text-gray-300 max-w-xl mx-auto">
           Stay updated with the latest anime releases, rankings and more.
         </p>
+
         <Link href="/signin">
           <Button />
         </Link>
       </section>
-
-      {/* Features Section (cards etc.) */}
 
       {/* Popular Anime Carousel */}
       <section className="mt-20 w-full max-w-5xl">

@@ -11,7 +11,7 @@ interface Anime {
   title: string;
   images: {
     jpg: {
-      image_url: string;
+      large_image_url: string;
     };
   };
 }
@@ -24,12 +24,13 @@ export default function LandingPage() {
   useEffect(() => {
     const fetchPopularAnime = async () => {
       try {
-        const res = await fetch("/api/anime/popular"); // ✅ use your proxy
+        // ✅ Direct fetch from Jikan
+        const res = await fetch("https://api.jikan.moe/v4/seasons/now");
         const data = await res.json();
 
         if (Array.isArray(data?.data)) {
           const formatted = data.data.map((anime: Anime) => ({
-            src: anime.images.jpg.image_url,
+            src: anime.images.jpg.large_image_url,
             alt: anime.title,
           }));
           setAnimeImages(formatted);
@@ -62,7 +63,10 @@ export default function LandingPage() {
       {/* Popular Anime Carousel */}
       <section className="mt-20 w-full max-w-5xl">
         {animeImages.length > 0 ? (
-          <CardCarousel images={animeImages} autoplayDelay={2000} />
+          <CardCarousel
+            images={animeImages.slice(0, 10)}
+            autoplayDelay={2000}
+          />
         ) : (
           <p className="text-gray-400">Loading popular anime...</p>
         )}

@@ -96,6 +96,9 @@ export default function AnimePage() {
 
   return (
     <div>
+      <h1 className="text-3xl font-extrabold text-indigo-200 p-7">
+        Currently Airing
+      </h1>
       <main className="p-8 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6">
         {animeList.map((anime) => (
           <Link href={`/anime/${anime.mal_id}`} key={anime.mal_id}>

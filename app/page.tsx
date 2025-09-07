@@ -5,6 +5,8 @@ import { CardCarousel } from "@/components/ui/card-carousel";
 import Button from "@/components/button";
 import Link from "next/link";
 import { TypingAnimation } from "@/components/magicui/typing-animation";
+import { useUser } from "@clerk/nextjs";
+import { useRouter } from "next/navigation";
 
 interface Anime {
   mal_id: number;
@@ -16,15 +18,24 @@ interface Anime {
   };
 }
 
-export default function LandingPage() {
+export default function LandingPageContent() {
   const [animeImages, setAnimeImages] = useState<
     { src: string; alt: string }[]
   >([]);
+  const { isSignedIn } = useUser();
+  const router = useRouter();
 
+  // 🚀 Redirect if signed in
+  useEffect(() => {
+    if (isSignedIn) {
+      router.push("/anime");
+    }
+  }, [isSignedIn, router]);
+
+  // 🎬 Fetch seasonal anime
   useEffect(() => {
     const fetchPopularAnime = async () => {
       try {
-        // ✅ Direct fetch from Jikan
         const res = await fetch("https://api.jikan.moe/v4/seasons/now");
         const data = await res.json();
 
@@ -45,6 +56,9 @@ export default function LandingPage() {
     fetchPopularAnime();
   }, []);
 
+  // ⛔ Prevent flash of landing page for signed-in users
+  if (isSignedIn) return null;
+
   return (
     <main className="flex flex-col items-center justify-center min-h-screen bg-gradient-to-b from-black via-indigo-950 to-indigo-900 text-white">
       {/* Hero Section */}
@@ -55,7 +69,7 @@ export default function LandingPage() {
           Stay updated with the latest anime releases, rankings and more.
         </p>
 
-        <Link href="/signin">
+        <Link href="/sign-in">
           <Button />
         </Link>
       </section>

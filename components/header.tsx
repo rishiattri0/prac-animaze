@@ -3,6 +3,13 @@
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
+import {
+  UserButton,
+  SignInButton,
+  SignUpButton,
+  SignedIn,
+  SignedOut,
+} from "@clerk/nextjs";
 
 export default function Navbar() {
   const [open, setOpen] = useState(false);
@@ -33,7 +40,6 @@ export default function Navbar() {
     { name: "Airing", path: "/anime" },
     { name: "Manga", path: "/manga" },
     { name: "MyList", path: "/anime/mylist" },
-    { name: "Sign In", path: "/signin" },
   ];
 
   return (
@@ -81,11 +87,11 @@ export default function Navbar() {
             </svg>
           </button>
 
-          {/* Links */}
+          {/* Links + Auth */}
           <nav
             id="main-nav"
             className={cn(
-              "absolute md:static left-0 w-full md:w-auto flex-col md:flex md:flex-row md:space-x-10 font-medium transition-all duration-300 ease-in-out overflow-hidden",
+              "absolute md:static left-0 w-full md:w-auto flex-col md:flex md:flex-row md:items-center md:space-x-10 font-medium transition-all duration-300 ease-in-out overflow-hidden",
               open
                 ? "top-16 opacity-100 bg-gradient-to-r from-black via-gray-950 to-blue-950 z-50 py-4"
                 : "top-[-400px] opacity-0 md:opacity-100 md:top-auto md:bg-transparent"
@@ -106,11 +112,32 @@ export default function Navbar() {
                 </span>
               </Link>
             ))}
+
+            {/* Clerk Auth */}
+            <div className="flex items-center gap-3 px-6 md:px-0 mt-4 md:mt-0">
+              <SignedOut>
+                <SignInButton mode="modal">
+                  <button className="bg-sky-600 text-white rounded-full font-medium text-sm sm:text-base h-10 sm:h-11 px-4 sm:px-5 cursor-pointer hover:bg-sky-500 transition">
+                    Sign In
+                  </button>
+                </SignInButton>
+
+                <SignUpButton mode="modal">
+                  <button className="bg-[#6c47ff] text-white rounded-full font-medium text-sm sm:text-base h-10 sm:h-11 px-4 sm:px-5 cursor-pointer hover:bg-[#5a39d6] transition">
+                    Sign Up
+                  </button>
+                </SignUpButton>
+              </SignedOut>
+
+              <SignedIn>
+                <UserButton afterSignOutUrl="/" />
+              </SignedIn>
+            </div>
           </nav>
         </div>
       </header>
 
-      {/* Spacer to offset the fixed header (prevents content being cut off) */}
+      {/* Spacer to offset the fixed header */}
       <div style={{ height: navH }} aria-hidden />
     </>
   );

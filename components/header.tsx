@@ -3,20 +3,15 @@
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
-import {
-  UserButton,
-  SignInButton,
-  SignUpButton,
-  SignedIn,
-  SignedOut,
-} from "@clerk/nextjs";
+import { UserButton, SignedIn, SignedOut, useUser } from "@clerk/nextjs";
 
 export default function Navbar() {
   const [open, setOpen] = useState(false);
   const headerRef = useRef<HTMLElement | null>(null);
   const [navH, setNavH] = useState(0);
 
-  // Measure header height and keep it updated
+  const { isSignedIn } = useUser();
+
   useEffect(() => {
     const el = headerRef.current;
     if (!el) return;
@@ -35,11 +30,11 @@ export default function Navbar() {
   }, []);
 
   const links = [
-    { name: "Home", path: "/" },
-    { name: "Top Anime", path: "/anime/topanime" },
-    { name: "Airing", path: "/anime" },
-    { name: "Manga", path: "/manga" },
-    { name: "MyList", path: "/anime/mylist" },
+    { name: "Home", path: "/", protected: false },
+    { name: "Top Anime", path: "/anime/topanime", protected: true },
+    { name: "Airing", path: "/anime", protected: true },
+    { name: "Manga", path: "/manga", protected: true },
+    { name: "MyList", path: "/anime/mylist", protected: true },
   ];
 
   return (
@@ -97,36 +92,41 @@ export default function Navbar() {
                 : "top-[-400px] opacity-0 md:opacity-100 md:top-auto md:bg-transparent"
             )}
           >
-            {links.map((item) => (
-              <Link
-                key={item.name}
-                href={item.path}
-                onClick={() => setOpen(false)}
-              >
-                <span
-                  className="block px-6 py-2 md:px-0 md:py-0 
-                  text-gray-300 hover:text-sky-400 transition duration-200 cursor-pointer 
-                  hover:drop-shadow-[0_0_8px_rgba(56,189,248,0.7)]"
+            {links.map((item) => {
+              const targetPath =
+                item.protected && !isSignedIn ? "/sign-in" : item.path;
+
+              return (
+                <Link
+                  key={item.name}
+                  href={targetPath}
+                  onClick={() => setOpen(false)}
                 >
-                  {item.name}
-                </span>
-              </Link>
-            ))}
+                  <span
+                    className="block px-6 py-2 md:px-0 md:py-0 
+                    text-gray-300 hover:text-sky-400 transition duration-200 cursor-pointer 
+                    hover:drop-shadow-[0_0_8px_rgba(56,189,248,0.7)]"
+                  >
+                    {item.name}
+                  </span>
+                </Link>
+              );
+            })}
 
             {/* Clerk Auth */}
             <div className="flex items-center gap-3 px-6 md:px-0 mt-4 md:mt-0">
               <SignedOut>
-                <SignInButton mode="modal">
+                <Link href="/sign-in">
                   <button className="bg-sky-600 text-white rounded-full font-medium text-sm sm:text-base h-8 sm:h-11 px-4 sm:px-5 cursor-pointer hover:bg-sky-500 transition">
                     Sign In
                   </button>
-                </SignInButton>
+                </Link>
 
-                <SignUpButton mode="modal">
+                <Link href="/sign-up">
                   <button className="bg-[#6c47ff] text-white rounded-full font-medium text-sm sm:text-base h-8 sm:h-11 px-4 sm:px-5 cursor-pointer hover:bg-[#5a39d6] transition">
                     Sign Up
                   </button>
-                </SignUpButton>
+                </Link>
               </SignedOut>
 
               <SignedIn>
@@ -137,7 +137,7 @@ export default function Navbar() {
         </div>
       </header>
 
-      {/* Spacer to offset the fixed header */}
+      {/* Spacer */}
       <div style={{ height: navH }} aria-hidden />
     </>
   );

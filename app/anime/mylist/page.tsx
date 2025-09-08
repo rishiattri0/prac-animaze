@@ -42,7 +42,7 @@ export default function MyListPage() {
                 key={anime.mal_id}
                 className="group bg-[#0d1324]/80 rounded-2xl overflow-hidden shadow-lg border border-indigo-800/40 hover:shadow-indigo-500/30 transition-transform duration-300 hover:-translate-y-2"
               >
-                <div className="relative w-full h-72">
+                <div className="relative w-full h-90">
                   <Image
                     src={anime.images.jpg.large_image_url}
                     alt={anime.title}
@@ -50,7 +50,7 @@ export default function MyListPage() {
                     className="object-cover rounded-t-2xl group-hover:scale-105 transition-transform duration-300"
                   />
                 </div>
-                <div className="p-3 text-center text-sm font-semibold text-indigo-100 group-hover:text-indigo-300 line-clamp-2">
+                <div className="p-3 text-center text-sm font-semibold text-indigo-100 group-hover:text-indigo-300 line-clamp-3">
                   {anime.title}
                 </div>
               </Link>

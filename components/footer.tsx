@@ -9,7 +9,7 @@ const links = [
 
 export default function FooterSection() {
   return (
-    <footer className="relative bg-gradient-to-b from-indigo-900 via-indigo-950 to-black">
+    <footer className="relative bg-gradient-to-b from-indigo-900  to-black">
       {/* Faded overlay at the very bottom for smoothness */}
       <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-black/80 pointer-events-none"></div>
 

@@ -116,17 +116,19 @@ export default function Navbar() {
             {/* Clerk Auth */}
             <div className="flex items-center gap-3 px-6 md:px-0 mt-4 md:mt-0">
               <SignedOut>
-                <Link href="/sign-in">
-                  <button className="bg-sky-600 text-white rounded-full font-medium text-sm sm:text-base h-8 sm:h-11 px-4 sm:px-5 cursor-pointer hover:bg-sky-500 transition">
-                    Sign In
-                  </button>
-                </Link>
+                <div className="flex items-center gap-3 px-6 md:px-0 mt-4 md:mt-0">
+                  <Link href="/sign-in">
+                    <button className="px-4 py-2 text-sm font-semibold text-white bg-sky-600 rounded-full hover:bg-sky-500 hover:scale-105 active:scale-95 transition-all duration-200 shadow-md shadow-sky-900/30">
+                      Sign In
+                    </button>
+                  </Link>
 
-                <Link href="/sign-up">
-                  <button className="bg-[#6c47ff] text-white rounded-full font-medium text-sm sm:text-base h-8 sm:h-11 px-4 sm:px-5 cursor-pointer hover:bg-[#5a39d6] transition">
-                    Sign Up
-                  </button>
-                </Link>
+                  <Link href="/sign-up">
+                    <button className="px-4 py-2 text-sm font-semibold text-white bg-indigo-600 rounded-full hover:bg-indigo-500 hover:scale-105 active:scale-95 transition-all duration-200 shadow-md shadow-indigo-900/30">
+                      Sign Up
+                    </button>
+                  </Link>
+                </div>
               </SignedOut>
 
               <SignedIn>

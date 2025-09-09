@@ -12,6 +12,7 @@ import {
   SignedOut,
   UserButton,
 } from "@clerk/nextjs";
+import FooterSection from "@/components/footer";
 const geistSans = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin"],
@@ -53,6 +54,7 @@ export default function RootLayout({
           >
             <Navbar></Navbar>
             {children}
+            <FooterSection />
           </ThemeProvider>
         </ClerkProvider>
       </body>

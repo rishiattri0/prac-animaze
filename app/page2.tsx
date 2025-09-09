@@ -7,6 +7,7 @@ import Link from "next/link";
 import { TypingAnimation } from "@/components/magicui/typing-animation";
 import { useUser } from "@clerk/nextjs";
 import { useRouter } from "next/navigation";
+import FooterSection from "@/components/footer";
 
 export default function LandingPageContent({
   animeImages,

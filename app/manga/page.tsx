@@ -2,8 +2,18 @@
 
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
-
 import { ReactNode } from "react";
+
+// ✅ Reusable Gradient Loader
+function GradientLoader() {
+  return (
+    <div className="flex items-center justify-center min-h-screen">
+      <div className="p-3 animate-spin drop-shadow-2xl bg-gradient-to-bl from-pink-400 via-purple-400 to-indigo-600 md:w-48 md:h-48 w-32 h-32 aspect-square rounded-full">
+        <div className="rounded-full h-full w-full bg-slate-100 dark:bg-zinc-900 backdrop-blur-md"></div>
+      </div>
+    </div>
+  );
+}
 
 export function Header1({ children }: { children: ReactNode }) {
   return (
@@ -97,9 +107,14 @@ export default function MangaPage() {
     };
   }, [loading, hasMore]);
 
+  // 🚨 Full screen loader on first load
+  if (loading && mangaList.length === 0) {
+    return <GradientLoader />;
+  }
+
   return (
     <div>
-      <h1 className="text-3xl font-extrabold text-indigo-200  p-7">Manga</h1>
+      <h1 className="text-3xl font-extrabold text-indigo-200 p-7">Manga</h1>
 
       <main className="p-8 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6">
         {mangaList.map((manga) => (
@@ -131,8 +146,14 @@ export default function MangaPage() {
         <div ref={loader} className="h-10" />
       </main>
 
-      {loading && <p className="text-center py-4">Loading more manga...</p>}
+      {/* Inline loader while scrolling */}
+      {loading && mangaList.length > 0 && (
+        <div className="flex justify-center py-6">
+          <div className="w-6 h-6 border-2 border-indigo-400 border-t-transparent rounded-full animate-spin"></div>
+        </div>
+      )}
 
+      {/* Error */}
       {error && !loading && (
         <p className="text-center py-4 text-red-500">
           ❌ {error}{" "}
@@ -145,6 +166,7 @@ export default function MangaPage() {
         </p>
       )}
 
+      {/* No more results */}
       {!hasMore && !loading && mangaList.length > 0 && (
         <p className="text-center py-4 text-gray-500">
           🎉 You've seen all the top manga!

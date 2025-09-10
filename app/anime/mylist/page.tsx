@@ -15,8 +15,20 @@ type Anime = {
   };
 };
 
+// ✅ Gradient Loader Component (reusable)
+function GradientLoader() {
+  return (
+    <div className="flex items-center justify-center min-h-screen">
+      <div className="p-3 animate-spin drop-shadow-2xl bg-gradient-to-bl from-pink-400 via-purple-400 to-indigo-600 md:w-48 md:h-48 w-32 h-32 aspect-square rounded-full">
+        <div className="rounded-full h-full w-full bg-slate-100 dark:bg-zinc-900 backdrop-blur-md"></div>
+      </div>
+    </div>
+  );
+}
+
 export default function MyListPage() {
   const [myList, setMyList] = useState<Anime[]>([]);
+  const [loading, setLoading] = useState(true); // ✅ start with loading true
 
   // Load saved list from localStorage
   useEffect(() => {
@@ -24,6 +36,7 @@ export default function MyListPage() {
     if (stored) {
       setMyList(JSON.parse(stored));
     }
+    setLoading(false); // ✅ stop loading after localStorage check
   }, []);
 
   // Remove anime from list
@@ -32,6 +45,11 @@ export default function MyListPage() {
     setMyList(updatedList);
     localStorage.setItem("myAnimeList", JSON.stringify(updatedList));
   };
+
+  // 🚨 Show full screen loader while list is being prepared
+  if (loading) {
+    return <GradientLoader />;
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-black via-[#0a0f1f] to-indigo-900 text-gray-100 px-6 py-10">

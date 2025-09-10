@@ -2,7 +2,6 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { Header2 } from "@/components/header2";
 import SaveToListButton from "@/components/SaveToListButton";
 
 interface Anime {
@@ -11,6 +10,17 @@ interface Anime {
   images: { jpg: { large_image_url: string } };
   episodes: number | null;
   status: string;
+}
+
+// ✅ Gradient Loader Component
+function GradientLoader() {
+  return (
+    <div className="flex items-center justify-center min-h-screen">
+      <div className="p-3 animate-spin drop-shadow-2xl bg-gradient-to-bl from-pink-400 via-purple-400 to-indigo-600 md:w-48 md:h-48 w-32 h-32 aspect-square rounded-full">
+        <div className="rounded-full h-full w-full bg-slate-100 dark:bg-zinc-900 backdrop-blur-md"></div>
+      </div>
+    </div>
+  );
 }
 
 export default function TopAnime() {
@@ -68,6 +78,11 @@ export default function TopAnime() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, [loading, hasMore]);
 
+  // 🚨 Full screen loader on first load
+  if (loading && animeList.length === 0) {
+    return <GradientLoader />;
+  }
+
   return (
     <div>
       <main className="p-8 bg-gradient-to-b from-black to-indigo-950 min-h-screen ">
@@ -106,12 +121,14 @@ export default function TopAnime() {
           ))}
         </div>
 
-        {/* Loading state */}
-        {loading && (
+        {/* Inline loader when fetching more */}
+        {loading && animeList.length > 0 && (
           <div className="flex justify-center mt-6">
             <div className="w-6 h-6 border-2 border-indigo-400 border-t-transparent rounded-full animate-spin"></div>
           </div>
         )}
+
+        {/* End of list */}
         {!hasMore && (
           <p className="text-center text-gray-500 mt-6">
             🎉 You’ve reached the end!

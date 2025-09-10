@@ -2,9 +2,19 @@
 
 import { useEffect, useRef, useState } from "react";
 import SaveToListButton from "@/components/SaveToListButton";
-
 import Link from "next/link";
-import { Header1 } from "@/components/header1";
+
+// Gradient Loader Component
+function GradientLoader() {
+  return (
+    <div className="flex items-center justify-center min-h-screen">
+      <div className="p-3 animate-spin drop-shadow-2xl bg-gradient-to-bl from-pink-400 via-purple-400 to-indigo-600 md:w-48 md:h-48 w-32 h-32 aspect-square rounded-full">
+        <div className="rounded-full h-full w-full bg-slate-100 dark:bg-zinc-900 backdrop-blur-md"></div>
+      </div>
+    </div>
+  );
+}
+
 export default function AnimePage() {
   const [animeList, setAnimeList] = useState<any[]>([]);
   const [page, setPage] = useState(1);
@@ -44,7 +54,6 @@ export default function AnimePage() {
         return true;
       });
 
-      // If it's the very first fetch and everything was duplicate → don't kill hasMore
       if (newAnime.length === 0 && pageNum === 1) {
         return;
       }
@@ -94,18 +103,21 @@ export default function AnimePage() {
     };
   }, [loading, hasMore]);
 
+  // 🚨 Show full-screen loader until first batch is fetched
+  if (loading && animeList.length === 0) {
+    return <GradientLoader />;
+  }
+
   return (
     <div>
       <h1 className="text-3xl font-extrabold text-indigo-200 p-7">
         Currently Airing
       </h1>
+
       <main className="p-8 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6">
         {animeList.map((anime) => (
           <Link href={`/anime/${anime.mal_id}`} key={anime.mal_id}>
-            <div
-              key={anime.mal_id}
-              className="bg-black rounded-xl shadow p-4 flex flex-col shadow-cyan-100/100 hover:scale-105 transition"
-            >
+            <div className="bg-black rounded-xl shadow p-4 flex flex-col shadow-cyan-100/100 hover:scale-105 transition">
               <div className="w-full aspect-[3/4] overflow-hidden rounded-lg">
                 <img
                   src={anime.images.jpg.large_image_url}
@@ -132,8 +144,12 @@ export default function AnimePage() {
         <div ref={loader} className="h-10" />
       </main>
 
-      {/* Loading */}
-      {loading && <p className="text-center py-4">Loading more anime...</p>}
+      {/* Inline loader when fetching more */}
+      {loading && animeList.length > 0 && (
+        <div className="flex items-center justify-center py-8">
+          <GradientLoader />
+        </div>
+      )}
 
       {/* Error */}
       {error && !loading && (

@@ -2,6 +2,9 @@
 
 import { useEffect, useState } from "react";
 import { HoverExpand_001 } from "@/components/newscoursal";
+import { TypingAnimation } from "@/components/magicui/typing-animation";
+import Link from "next/link";
+import FooterSection from "@/components/footer";
 
 interface NewsItem {
   title: string;
@@ -34,24 +37,34 @@ export default function NewsPage() {
     fetchNews();
   }, []);
 
-  if (loading) {
-    return <p className="p-6 text-center">Loading news...</p>;
-  }
-
-  if (!news.length) {
-    return <p className="p-6 text-center">No news available.</p>;
-  }
-
   return (
-    <div className="flex h-full w-full items-center justify-center overflow-hidden bg-[#f5f4f3]">
-      <HoverExpand_001
-        items={news.map((n) => ({
-          src: n.images.jpg.image_url,
-          alt: n.title,
-          code: n.excerpt,
-          link: n.url,
-        }))}
-      />
-    </div>
+    <main className="flex flex-col items-center justify-center min-h-screen bg-gradient-to-b from-black via-indigo-950 to-indigo-900 text-white">
+      {/* Hero Section */}
+      <section className="text-center mt-20 px-4">
+        <TypingAnimation>Latest Anime News</TypingAnimation>
+
+        <p className="mt-4 text-lg text-gray-300 max-w-xl mx-auto">
+          Stay updated with the newest headlines from the anime world.
+        </p>
+      </section>
+
+      {/* News Carousel */}
+      <section className="mt-16 w-full max-w-6xl flex justify-center">
+        {loading ? (
+          <p className="text-gray-400">Loading news...</p>
+        ) : news.length > 0 ? (
+          <HoverExpand_001
+            items={news.map((n) => ({
+              src: n.images.jpg.image_url,
+              alt: n.title,
+              code: n.excerpt,
+              link: n.url,
+            }))}
+          />
+        ) : (
+          <p className="text-gray-400">No news available</p>
+        )}
+      </section>
+    </main>
   );
 }

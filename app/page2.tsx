@@ -19,7 +19,7 @@ export default function LandingPageContent({
 
   useEffect(() => {
     if (isSignedIn) {
-      router.push("/anime");
+      router.push("/news");
     }
   }, [isSignedIn, router]);
 

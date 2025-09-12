@@ -1,9 +1,8 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import Link from "next/link";
-import SaveToListButton from "@/components/SaveToListButton";
 import GradientLoader from "@/components/loader";
+import AnimeCard from "@/components/AnimeCard"; // 👈 unified card
 
 interface Anime {
   mal_id: number;
@@ -19,7 +18,6 @@ export default function TopAnime() {
   const [loading, setLoading] = useState(false);
   const [hasMore, setHasMore] = useState(true);
 
-  // Fetch top anime
   const fetchAnime = async (pageNum: number) => {
     setLoading(true);
     try {
@@ -33,7 +31,6 @@ export default function TopAnime() {
       } else {
         setAnimeList((prev) => {
           const newList = [...prev, ...data.data];
-          // ✅ remove duplicates by mal_id
           const unique = Array.from(
             new Map(newList.map((a) => [a.mal_id, a])).values()
           );
@@ -51,7 +48,6 @@ export default function TopAnime() {
     fetchAnime(page);
   }, [page]);
 
-  // Infinite scroll
   useEffect(() => {
     const handleScroll = () => {
       if (
@@ -68,63 +64,36 @@ export default function TopAnime() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, [loading, hasMore]);
 
-  // 🚨 Full screen loader on first load
   if (loading && animeList.length === 0) {
     return <GradientLoader />;
   }
 
   return (
-    <div>
-      <main className="p-8 bg-gradient-to-b from-black to-indigo-950 min-h-screen ">
-        <h1 className="text-3xl font-extrabold text-indigo-200 mb-8">
-          Top Anime
-        </h1>
+    <main className="p-8 bg-gradient-to-b from-black to-indigo-950 min-h-screen">
+      <h1 className="text-3xl font-extrabold text-indigo-200 mb-8">
+        Top Anime
+      </h1>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6">
-          {animeList.map((anime) => (
-            <Link href={`/anime/${anime.mal_id}`} key={anime.mal_id}>
-              <div className="bg-black rounded-xl shadow p-4 flex flex-col shadow-cyan-100/40 hover:shadow-cyan-300/70 hover:-translate-y-2 transform transition duration-300">
-                <div className="w-full aspect-[3/4] overflow-hidden rounded-lg">
-                  <img
-                    src={anime.images.jpg.large_image_url}
-                    alt={anime.title}
-                    width={300}
-                    height={400}
-                    className="object-cover w-full h-full hover:scale-105 transition-transform duration-500"
-                  />
-                </div>
-                <h2
-                  className="font-bold text-center mt-2 truncate text-indigo-100"
-                  title={anime.title}
-                >
-                  {anime.title}
-                </h2>
-                <p className="text-center text-gray-400 text-sm">
-                  Episodes: {anime.episodes ?? "?"}
-                </p>
-                <p className="text-center text-gray-400 text-sm">
-                  Status: {anime.status}
-                </p>
-                <SaveToListButton anime={anime} />
-              </div>
-            </Link>
-          ))}
+      {/* Grid */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6 max-w-6xl mx-auto">
+        {animeList.map((anime) => (
+          <AnimeCard key={anime.mal_id} anime={anime} />
+        ))}
+      </div>
+
+      {/* Loader */}
+      {loading && animeList.length > 0 && (
+        <div className="flex justify-center mt-6">
+          <div className="w-6 h-6 border-2 border-indigo-400 border-t-transparent rounded-full animate-spin"></div>
         </div>
+      )}
 
-        {/* Inline loader when fetching more */}
-        {loading && animeList.length > 0 && (
-          <div className="flex justify-center mt-6">
-            <div className="w-6 h-6 border-2 border-indigo-400 border-t-transparent rounded-full animate-spin"></div>
-          </div>
-        )}
-
-        {/* End of list */}
-        {!hasMore && (
-          <p className="text-center text-gray-500 mt-6">
-            🎉 You’ve reached the end!
-          </p>
-        )}
-      </main>
-    </div>
+      {/* End */}
+      {!hasMore && (
+        <p className="text-center text-gray-500 mt-6">
+          🎉 You’ve reached the end!
+        </p>
+      )}
+    </main>
   );
 }

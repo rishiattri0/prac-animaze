@@ -1,10 +1,9 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import SaveToListButton from "@/components/SaveToListButton";
-import Link from "next/link";
 import GradientLoader from "@/components/loader";
-import { RecommendationCarousel } from "@/components/recommendation-carousel"; // 👈 import our component
+import { RecommendationCarousel } from "@/components/recommendation-carousel";
+import AnimeCard from "@/components/AnimeCard"; // 👈 unified card
 
 // ----------------- TYPES -----------------
 interface Recommendation {
@@ -38,7 +37,7 @@ export default function AnimePage() {
           "https://api.jikan.moe/v4/recommendations/anime"
         );
         const data = await res.json();
-        setRecommendations(data.data.slice(0, 8)); // take first 8
+        setRecommendations(data.data.slice(0, 8)); // only first 8 recs
       } catch (err) {
         console.error("Error fetching recommendations:", err);
       } finally {
@@ -86,17 +85,17 @@ export default function AnimePage() {
     }
   };
 
-  // Fetch page 1 on mount
+  // Fetch first page
   useEffect(() => {
     fetchAnime(1);
   }, []);
 
-  // Fetch when page increments
+  // Fetch when page changes
   useEffect(() => {
     if (page > 1) fetchAnime(page);
   }, [page]);
 
-  // Infinite scroll observer
+  // ----------------- INFINITE SCROLL OBSERVER -----------------
   useEffect(() => {
     const observer = new IntersectionObserver(
       (entries) => {
@@ -104,7 +103,7 @@ export default function AnimePage() {
           setPage((prev) => prev + 1);
         }
       },
-      { threshold: 0.1 }
+      { rootMargin: "200px", threshold: 0 } // 👈 load before fully reaching bottom
     );
 
     const currentLoader = loader.current;
@@ -151,38 +150,14 @@ export default function AnimePage() {
         </h2>
         <main className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6 max-w-6xl mx-auto">
           {animeList.map((anime) => (
-            <Link href={`/anime/${anime.mal_id}`} key={anime.mal_id}>
-              <div className="bg-indigo-950/40 rounded-xl shadow shadow-indigo-500/40 p-4 flex flex-col hover:scale-105 transition">
-                <div className="w-full aspect-[3/4] overflow-hidden rounded-lg">
-                  <img
-                    src={anime.images.jpg.large_image_url}
-                    alt={anime.title}
-                    width={300}
-                    height={400}
-                    className="object-cover w-full h-full"
-                  />
-                </div>
-                <h2
-                  className="font-bold text-center mt-3 truncate"
-                  title={anime.title}
-                >
-                  {anime.title}
-                </h2>
-                <p className="text-center text-gray-300">
-                  Episodes: {anime.episodes ?? "?"}
-                </p>
-                <p className="text-center text-gray-300">
-                  Status: {anime.status}
-                </p>
-                <SaveToListButton anime={anime} />
-              </div>
-            </Link>
+            <AnimeCard key={anime.mal_id} anime={anime} />
           ))}
-          <div ref={loader} className="h-10" />
+          {/* Infinite Scroll Sentinel */}
+          <div ref={loader} className="h-20 w-full" />
         </main>
       </section>
 
-      {/* Inline loader */}
+      {/* Inline Loader */}
       {loading && animeList.length > 0 && (
         <div className="flex items-center justify-center py-8">
           <GradientLoader />
@@ -202,14 +177,14 @@ export default function AnimePage() {
         </p>
       )}
 
-      {/* No more anime */}
+      {/* No More Anime */}
       {!hasMore && !loading && animeList.length > 0 && (
         <p className="text-center py-4 text-gray-500">
           🎉 You've seen all the anime!
         </p>
       )}
 
-      {/* No results */}
+      {/* No Results */}
       {!hasMore && !loading && animeList.length === 0 && (
         <p className="text-center py-4 text-gray-500">
           No anime found for this season.

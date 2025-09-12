@@ -2,30 +2,28 @@
 
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
-import { ReactNode } from "react";
 import GradientLoader from "@/components/loader";
 
-// ✅ Reusable Gradient Loader
-
-export function Header1({ children }: { children: ReactNode }) {
-  return (
-    <h1 className="text-3xl font-bold text-center my-6 text-white">
-      {children}
-    </h1>
-  );
+interface Manga {
+  mal_id: number;
+  title: string;
+  images: { jpg: { large_image_url: string } };
+  chapters: number | null;
+  volumes: number | null;
+  status: string;
 }
 
 export default function MangaPage() {
-  const [mangaList, setMangaList] = useState<any[]>([]);
+  const [mangaList, setMangaList] = useState<Manga[]>([]);
   const [page, setPage] = useState(1);
   const [loading, setLoading] = useState(false);
   const [hasMore, setHasMore] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const loader = useRef<HTMLDivElement>(null);
 
-  // Track already added manga by mal_id
   const seenIds = useRef<Set<number>>(new Set());
 
+  // ---------------- FETCH MANGA ----------------
   const fetchManga = async (pageNum: number) => {
     if (loading) return;
     setLoading(true);
@@ -35,10 +33,7 @@ export default function MangaPage() {
       const res = await fetch(
         `https://api.jikan.moe/v4/top/manga?page=${pageNum}`
       );
-
-      if (!res.ok) {
-        throw new Error(`Failed to fetch: ${res.status}`);
-      }
+      if (!res.ok) throw new Error(`Failed to fetch: ${res.status}`);
 
       const data = await res.json();
 
@@ -47,8 +42,7 @@ export default function MangaPage() {
         return;
       }
 
-      // Filter duplicates
-      const newManga = data.data.filter((manga: any) => {
+      const newManga = data.data.filter((manga: Manga) => {
         if (seenIds.current.has(manga.mal_id)) return false;
         seenIds.current.add(manga.mal_id);
         return true;
@@ -68,19 +62,17 @@ export default function MangaPage() {
     }
   };
 
-  // Fetch first page
+  // first page
   useEffect(() => {
     fetchManga(1);
   }, []);
 
-  // Fetch when page increments
+  // page increment
   useEffect(() => {
-    if (page > 1) {
-      fetchManga(page);
-    }
+    if (page > 1) fetchManga(page);
   }, [page]);
 
-  // Infinite scroll observer
+  // infinite scroll
   useEffect(() => {
     const observer = new IntersectionObserver(
       (entries) => {
@@ -99,19 +91,21 @@ export default function MangaPage() {
     };
   }, [loading, hasMore]);
 
-  // 🚨 Full screen loader on first load
+  // 🚨 Full screen loader
   if (loading && mangaList.length === 0) {
     return <GradientLoader />;
   }
 
   return (
-    <div>
-      <h1 className="text-3xl font-extrabold text-indigo-200 p-7">Manga</h1>
+    <div className="min-h-screen bg-gradient-to-b from-black via-indigo-950 to-indigo-900 text-white">
+      <h1 className="text-3xl font-extrabold text-indigo-200 text-center py-10">
+        📚 Top Manga
+      </h1>
 
-      <main className="p-8 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6">
+      <main className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6 max-w-6xl mx-auto px-6">
         {mangaList.map((manga) => (
           <Link href={`/manga/${manga.mal_id}`} key={manga.mal_id}>
-            <div className="bg-black rounded-xl shadow p-4 flex flex-col shadow-cyan-100/100 hover:scale-105 transition">
+            <div className="bg-indigo-950/40 rounded-xl shadow shadow-indigo-500/40 p-4 flex flex-col hover:scale-105 transition">
               <div className="w-full aspect-[3/4] overflow-hidden rounded-lg">
                 <img
                   src={manga.images.jpg.large_image_url}
@@ -122,30 +116,36 @@ export default function MangaPage() {
                 />
               </div>
               <h2
-                className="font-bold text-center mt-2 truncate"
+                className="font-bold text-center mt-3 truncate"
                 title={manga.title}
               >
                 {manga.title}
               </h2>
-              <p className="text-center">Chapters: {manga.chapters ?? "?"}</p>
-              <p className="text-center">Volumes: {manga.volumes ?? "?"}</p>
-              <p className="text-center">Status: {manga.status}</p>
+              <p className="text-center text-gray-300">
+                Chapters: {manga.chapters ?? "?"}
+              </p>
+              <p className="text-center text-gray-300">
+                Volumes: {manga.volumes ?? "?"}
+              </p>
+              <p className="text-center text-gray-300">
+                Status: {manga.status}
+              </p>
             </div>
           </Link>
         ))}
 
-        {/* Invisible sentinel */}
+        {/* sentinel for infinite scroll */}
         <div ref={loader} className="h-10" />
       </main>
 
-      {/* Inline loader while scrolling */}
+      {/* inline loader */}
       {loading && mangaList.length > 0 && (
-        <div className="flex justify-center py-6">
-          <div className="w-6 h-6 border-2 border-indigo-400 border-t-transparent rounded-full animate-spin"></div>
+        <div className="flex items-center justify-center py-8">
+          <GradientLoader />
         </div>
       )}
 
-      {/* Error */}
+      {/* error */}
       {error && !loading && (
         <p className="text-center py-4 text-red-500">
           ❌ {error}{" "}
@@ -158,13 +158,12 @@ export default function MangaPage() {
         </p>
       )}
 
-      {/* No more results */}
+      {/* no more results */}
       {!hasMore && !loading && mangaList.length > 0 && (
         <p className="text-center py-4 text-gray-500">
-          🎉 You've seen all the top manga!
+          🎉 You've seen all the manga!
         </p>
       )}
-
       {!hasMore && !loading && mangaList.length === 0 && (
         <p className="text-center py-4 text-gray-500">No manga found.</p>
       )}

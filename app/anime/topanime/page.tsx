@@ -70,8 +70,8 @@ export default function TopAnime() {
 
   return (
     <main className="p-8 bg-gradient-to-b from-black to-indigo-950 min-h-screen">
-      <h1 className="text-3xl font-extrabold text-indigo-200 mb-8">
-        Top Anime
+      <h1 className="text-4xl font-extrabold text-center text-indigo-200 mb-10">
+        ✨ Top Animes
       </h1>
 
       {/* Grid */}

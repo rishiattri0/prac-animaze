@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import GradientLoader from "@/components/loader";
 import { RecommendationCarousel } from "@/components/recommendation-carousel";
 import AnimeCard from "@/components/AnimeCard"; // 👈 unified card
@@ -26,9 +26,6 @@ export default function AnimePage() {
   const [recommendations, setRecommendations] = useState<Recommendation[]>([]);
   const [recLoading, setRecLoading] = useState(true);
 
-  const loader = useRef<HTMLDivElement>(null);
-  const seenIds = useRef<Set<number>>(new Set());
-
   // ----------------- FETCH RECOMMENDATIONS -----------------
   useEffect(() => {
     const fetchRecs = async () => {
@@ -49,7 +46,6 @@ export default function AnimePage() {
 
   // ----------------- FETCH SEASONAL ANIME -----------------
   const fetchAnime = async (pageNum: number) => {
-    if (loading) return;
     setLoading(true);
     setError(null);
 
@@ -65,18 +61,14 @@ export default function AnimePage() {
         return;
       }
 
-      const newAnime = data.data.filter((anime: any) => {
-        if (seenIds.current.has(anime.mal_id)) return false;
-        seenIds.current.add(anime.mal_id);
-        return true;
+      setAnimeList((prev) => {
+        const newList = [...prev, ...data.data];
+        // ✅ remove duplicates
+        const unique = Array.from(
+          new Map(newList.map((a) => [a.mal_id, a])).values()
+        );
+        return unique;
       });
-
-      if (newAnime.length === 0) {
-        setHasMore(false);
-        return;
-      }
-
-      setAnimeList((prev) => [...prev, ...newAnime]);
     } catch (err) {
       console.error("Error fetching anime:", err);
       setError(err instanceof Error ? err.message : "Unknown error");
@@ -85,33 +77,26 @@ export default function AnimePage() {
     }
   };
 
-  // Fetch first page
+  // Initial fetch
   useEffect(() => {
-    fetchAnime(1);
-  }, []);
-
-  // Fetch when page changes
-  useEffect(() => {
-    if (page > 1) fetchAnime(page);
+    fetchAnime(page);
   }, [page]);
 
-  // ----------------- INFINITE SCROLL OBSERVER -----------------
+  // ----------------- INFINITE SCROLL HANDLER -----------------
   useEffect(() => {
-    const observer = new IntersectionObserver(
-      (entries) => {
-        if (entries[0].isIntersecting && !loading && hasMore) {
-          setPage((prev) => prev + 1);
-        }
-      },
-      { rootMargin: "200px", threshold: 0 } // 👈 load before fully reaching bottom
-    );
-
-    const currentLoader = loader.current;
-    if (currentLoader) observer.observe(currentLoader);
-
-    return () => {
-      if (currentLoader) observer.unobserve(currentLoader);
+    const handleScroll = () => {
+      if (
+        window.innerHeight + window.scrollY >=
+          document.body.offsetHeight - 200 &&
+        !loading &&
+        hasMore
+      ) {
+        setPage((prev) => prev + 1);
+      }
     };
+
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
   }, [loading, hasMore]);
 
   // ----------------- UI -----------------
@@ -152,15 +137,13 @@ export default function AnimePage() {
           {animeList.map((anime) => (
             <AnimeCard key={anime.mal_id} anime={anime} />
           ))}
-          {/* Infinite Scroll Sentinel */}
-          <div ref={loader} className="h-20 w-full" />
         </main>
       </section>
 
-      {/* Inline Loader */}
+      {/* Inline loader */}
       {loading && animeList.length > 0 && (
-        <div className="flex items-center justify-center py-8">
-          <GradientLoader />
+        <div className="flex justify-center mt-6">
+          <div className="w-6 h-6 border-2 border-indigo-400 border-t-transparent rounded-full animate-spin"></div>
         </div>
       )}
 
@@ -177,17 +160,10 @@ export default function AnimePage() {
         </p>
       )}
 
-      {/* No More Anime */}
-      {!hasMore && !loading && animeList.length > 0 && (
-        <p className="text-center py-4 text-gray-500">
+      {/* End of list */}
+      {!hasMore && !loading && (
+        <p className="text-center text-gray-500 mt-6">
           🎉 You've seen all the anime!
-        </p>
-      )}
-
-      {/* No Results */}
-      {!hasMore && !loading && animeList.length === 0 && (
-        <p className="text-center py-4 text-gray-500">
-          No anime found for this season.
         </p>
       )}
     </div>

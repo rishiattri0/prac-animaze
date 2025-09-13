@@ -111,7 +111,7 @@ export default function NewsPage() {
                   src={promo.trailer.embed_url}
                   title={promo.entry.title}
                   className="w-full aspect-video"
-                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                  allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                   allowFullScreen
                 />
                 <div className="p-4">

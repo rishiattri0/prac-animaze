@@ -33,8 +33,15 @@ export default function AnimePage() {
         const res = await fetch(
           "https://api.jikan.moe/v4/recommendations/anime"
         );
-        const data = await res.json();
-        setRecommendations(data.data.slice(0, 8)); // only first 8 recs
+        const data: { data: Recommendation[] } = await res.json(); // 👈 type the response
+
+        // ✅ Filter unique by mal_id
+        const uniqueRecs: Recommendation[] = Array.from(
+          new Map(data.data.map((rec) => [rec.entry[0]?.mal_id, rec])).values()
+        );
+
+        // ✅ Take only first 20
+        setRecommendations(uniqueRecs.slice(0, 10));
       } catch (err) {
         console.error("Error fetching recommendations:", err);
       } finally {
@@ -121,7 +128,7 @@ export default function AnimePage() {
                   rec.entry[0]?.images?.jpg?.large_image_url ?? "/fallback.jpg",
                 alt: rec.entry[0]?.title ?? "Unknown",
                 code: rec.content,
-                link: rec.entry[0]?.url ?? "#",
+                link: `/anime/${rec.entry[0]?.mal_id}`, // 👈 goes to your [id] page
               }))}
             />
           </div>

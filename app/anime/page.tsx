@@ -128,7 +128,7 @@ export default function AnimePage() {
                   rec.entry[0]?.images?.jpg?.large_image_url ?? "/fallback.jpg",
                 alt: rec.entry[0]?.title ?? "Unknown",
                 code: rec.content,
-                link: `/anime/${rec.entry[0]?.mal_id}`, // 👈 goes to your [id] page
+                link: `/anime/${rec.entry[0]?.mal_id}`, // goes to your [id] page
               }))}
             />
           </div>

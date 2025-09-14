@@ -3,7 +3,9 @@
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import GradientLoader from "@/components/loader";
+import { RecommendationCarousel } from "@/components/recommendation-carousel"; // 👈 same carousel
 
+// ----------------- TYPES -----------------
 interface Manga {
   mal_id: number;
   title: string;
@@ -13,6 +15,16 @@ interface Manga {
   status: string;
 }
 
+interface Recommendation {
+  entry: {
+    mal_id: number;
+    title: string;
+    url: string;
+    images?: { jpg?: { large_image_url?: string } };
+  }[];
+  content: string;
+}
+
 export default function MangaPage() {
   const [mangaList, setMangaList] = useState<Manga[]>([]);
   const [page, setPage] = useState(1);
@@ -20,8 +32,34 @@ export default function MangaPage() {
   const [hasMore, setHasMore] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const loader = useRef<HTMLDivElement>(null);
-
   const seenIds = useRef<Set<number>>(new Set());
+
+  // ---------------- FETCH RECOMMENDATIONS ----------------
+  const [recommendations, setRecommendations] = useState<Recommendation[]>([]);
+  const [recLoading, setRecLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchRecs = async () => {
+      try {
+        const res = await fetch(
+          "https://api.jikan.moe/v4/recommendations/manga"
+        );
+        const data: { data: Recommendation[] } = await res.json();
+
+        // ✅ filter unique by mal_id
+        const uniqueRecs: Recommendation[] = Array.from(
+          new Map(data.data.map((rec) => [rec.entry[0]?.mal_id, rec])).values()
+        );
+
+        setRecommendations(uniqueRecs.slice(0, 10)); // take top 10
+      } catch (err) {
+        console.error("Error fetching manga recommendations:", err);
+      } finally {
+        setRecLoading(false);
+      }
+    };
+    fetchRecs();
+  }, []);
 
   // ---------------- FETCH MANGA ----------------
   const fetchManga = async (pageNum: number) => {
@@ -36,7 +74,6 @@ export default function MangaPage() {
       if (!res.ok) throw new Error(`Failed to fetch: ${res.status}`);
 
       const data = await res.json();
-
       if (!data.data || data.data.length === 0) {
         setHasMore(false);
         return;
@@ -98,9 +135,34 @@ export default function MangaPage() {
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-black via-indigo-950 to-indigo-900 text-white">
-      <h1 className="text-3xl font-extrabold text-indigo-200 text-center py-10">
-        📚 Top Manga
-      </h1>
+      {/* 🔹 Recommendations Section */}
+      <section className="py-14">
+        <h1 className="text-4xl font-extrabold text-center text-indigo-200 mb-10">
+          📚 Manga Picks For You
+        </h1>
+        {recLoading ? (
+          <p className="text-center text-gray-400">
+            Loading recommendations...
+          </p>
+        ) : (
+          <div className="flex justify-center">
+            <RecommendationCarousel
+              items={recommendations.map((rec) => ({
+                src:
+                  rec.entry[0]?.images?.jpg?.large_image_url ?? "/fallback.jpg",
+                alt: rec.entry[0]?.title ?? "Unknown",
+                code: rec.content,
+                link: `/manga/${rec.entry[0]?.mal_id}`, // 👈 goes to manga details page
+              }))}
+            />
+          </div>
+        )}
+      </section>
+
+      {/* 🔹 Top Manga Section */}
+      <h2 className="text-3xl font-extrabold text-indigo-200 text-center py-10">
+        📖 Top Manga
+      </h2>
 
       <main className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6 max-w-6xl mx-auto px-6">
         {mangaList.map((manga) => (
@@ -133,7 +195,6 @@ export default function MangaPage() {
             </div>
           </Link>
         ))}
-
         {/* sentinel for infinite scroll */}
         <div ref={loader} className="h-10" />
       </main>

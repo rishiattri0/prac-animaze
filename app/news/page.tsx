@@ -25,11 +25,21 @@ interface PromoItem {
   };
 }
 
+interface MagazineItem {
+  mal_id: number;
+  name: string;
+  url: string;
+  count: number; // number of entries in that magazine
+}
+
 export default function NewsPage() {
   const [news, setNews] = useState<NewsItem[]>([]);
   const [promos, setPromos] = useState<PromoItem[]>([]);
+  const [magazines, setMagazines] = useState<MagazineItem[]>([]);
+
   const [loadingNews, setLoadingNews] = useState(true);
   const [loadingPromos, setLoadingPromos] = useState(true);
+  const [loadingMagazines, setLoadingMagazines] = useState(true);
 
   // Fetch anime news
   useEffect(() => {
@@ -61,6 +71,22 @@ export default function NewsPage() {
       }
     };
     fetchPromos();
+  }, []);
+
+  // Fetch magazines
+  useEffect(() => {
+    const fetchMagazines = async () => {
+      try {
+        const res = await fetch("https://api.jikan.moe/v4/magazines");
+        const data = await res.json();
+        setMagazines(data.data.slice(0, 12)); // show only top 12 magazines
+      } catch (error) {
+        console.error("Error fetching magazines:", error);
+      } finally {
+        setLoadingMagazines(false);
+      }
+    };
+    fetchMagazines();
   }, []);
 
   return (
@@ -130,6 +156,36 @@ export default function NewsPage() {
           </div>
         ) : (
           <p className="text-gray-400 text-center">No promos available</p>
+        )}
+      </section>
+
+      {/* Magazines Section */}
+      <section className="mt-20 w-full max-w-6xl px-4 pb-20">
+        <h2 className="text-2xl font-bold mb-6 text-center">
+          📰 Popular Magazines
+        </h2>
+
+        {loadingMagazines ? (
+          <p className="text-gray-400 text-center">Loading magazines...</p>
+        ) : magazines.length > 0 ? (
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-6">
+            {magazines.map((mag) => (
+              <a
+                key={mag.mal_id}
+                href={mag.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="bg-gray-900 rounded-xl p-4 shadow-md hover:bg-indigo-800 transition"
+              >
+                <h3 className="text-lg font-semibold">{mag.name}</h3>
+                <p className="text-gray-400 text-sm mt-2">
+                  {mag.count} entries
+                </p>
+              </a>
+            ))}
+          </div>
+        ) : (
+          <p className="text-gray-400 text-center">No magazines available</p>
         )}
       </section>
     </main>

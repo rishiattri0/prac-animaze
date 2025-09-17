@@ -9,6 +9,7 @@ interface Anime {
   images: { jpg: { large_image_url: string } };
   episodes?: number | null;
   status?: string;
+  score?: number | null; // 👈 add score
 }
 
 export default function AnimeCard({ anime }: { anime: Anime }) {
@@ -39,8 +40,13 @@ export default function AnimeCard({ anime }: { anime: Anime }) {
           Episodes: {anime.episodes ?? "?"}
         </p>
         <p className="text-center text-gray-300 text-sm">
-          Status: {anime.status}
+          Status: {anime.status ?? "Unknown"}
         </p>
+        {anime.score && (
+          <p className="text-center text-yellow-400 text-sm font-semibold">
+            ⭐ {anime.score.toFixed(1)}
+          </p>
+        )}
 
         {/* Save button */}
         <SaveToListButton anime={anime} />

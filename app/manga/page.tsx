@@ -13,6 +13,7 @@ interface Manga {
   chapters: number | null;
   volumes: number | null;
   status: string;
+  score?: number | null; // 👈 added score
 }
 
 interface Recommendation {
@@ -46,7 +47,6 @@ export default function MangaPage() {
         );
         const data: { data: Recommendation[] } = await res.json();
 
-        // ✅ filter unique by mal_id
         const uniqueRecs: Recommendation[] = Array.from(
           new Map(data.data.map((rec) => [rec.entry[0]?.mal_id, rec])).values()
         );
@@ -191,6 +191,10 @@ export default function MangaPage() {
               </p>
               <p className="text-center text-gray-300">
                 Status: {manga.status}
+              </p>
+              {/* 👇 Score Display */}
+              <p className="text-center text-yellow-400 font-semibold">
+                ⭐ Score: {manga.score ?? "N/A"}
               </p>
             </div>
           </Link>

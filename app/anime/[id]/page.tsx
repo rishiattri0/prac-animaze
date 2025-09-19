@@ -29,7 +29,20 @@ type Review = {
   };
 };
 
-// Fetch Anime Details
+type Character = {
+  character: {
+    mal_id: number;
+    name: string;
+    images: { jpg: { image_url: string } };
+  };
+  role: string;
+  voice_actors?: {
+    person: { name: string };
+    language: string;
+  }[];
+};
+
+// ------------------- FETCHERS -------------------
 async function getAnime(id: string): Promise<AnimeDetails | null> {
   const res = await fetch(`https://api.jikan.moe/v4/anime/${id}`);
   if (!res.ok) return null;
@@ -37,7 +50,6 @@ async function getAnime(id: string): Promise<AnimeDetails | null> {
   return data.data || null;
 }
 
-// Fetch Anime Reviews
 async function getReviews(id: string): Promise<Review[]> {
   const res = await fetch(`https://api.jikan.moe/v4/anime/${id}/reviews`);
   if (!res.ok) return [];
@@ -45,14 +57,24 @@ async function getReviews(id: string): Promise<Review[]> {
   return data.data || [];
 }
 
+async function getCharacters(id: string): Promise<Character[]> {
+  const res = await fetch(`https://api.jikan.moe/v4/anime/${id}/characters`);
+  if (!res.ok) return [];
+  const data = await res.json();
+  return data.data || [];
+}
+
+// ------------------- PAGE -------------------
 export default async function AnimeDetailsPage({
   params,
 }: {
-  params: { id: string };
+  params: Promise<{ id: string }>; // 👈 params is now a Promise
 }) {
-  const { id } = params;
+  const { id } = await params; // 👈 must await params
+
   const anime = await getAnime(id);
   const reviews = await getReviews(id);
+  const characters = await getCharacters(id);
 
   if (!anime) return notFound();
 
@@ -131,6 +153,37 @@ export default async function AnimeDetailsPage({
             </div>
           ) : (
             <p className="text-gray-400">No reviews available.</p>
+          )}
+        </div>
+
+        {/* Characters Section */}
+        <div className="p-6 border-t border-indigo-800/40">
+          <h2 className="text-2xl font-bold text-indigo-300 mb-4">
+            Characters
+          </h2>
+          {characters.length > 0 ? (
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+              {characters.slice(0, 8).map((chara) => (
+                <div
+                  key={chara.character.mal_id}
+                  className="bg-indigo-900/30 p-4 rounded-lg border border-indigo-800/40 flex flex-col items-center text-center"
+                >
+                  <Image
+                    src={chara.character.images.jpg.image_url}
+                    alt={chara.character.name}
+                    width={200}
+                    height={200}
+                    className="rounded-lg shadow-md mb-2"
+                  />
+                  <p className="text-indigo-200 font-semibold text-sm">
+                    {chara.character.name}
+                  </p>
+                  <p className="text-gray-400 text-xs">{chara.role}</p>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <p className="text-gray-400">No characters available.</p>
           )}
         </div>
       </div>

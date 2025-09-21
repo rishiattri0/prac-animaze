@@ -1,6 +1,7 @@
 import { notFound } from "next/navigation";
 import Image from "next/image";
 import TrailerPlayer from "@/components/TrailerPlayer";
+import CharacterCarousel from "@/components/CharacterCarousel";
 
 type AnimeDetails = {
   mal_id: number;
@@ -162,26 +163,7 @@ export default async function AnimeDetailsPage({
             Characters
           </h2>
           {characters.length > 0 ? (
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
-              {characters.slice(0, 8).map((chara) => (
-                <div
-                  key={chara.character.mal_id}
-                  className="bg-indigo-900/30 p-4 rounded-lg border border-indigo-800/40 flex flex-col items-center text-center"
-                >
-                  <Image
-                    src={chara.character.images.jpg.image_url}
-                    alt={chara.character.name}
-                    width={200}
-                    height={200}
-                    className="rounded-lg shadow-md mb-2"
-                  />
-                  <p className="text-indigo-200 font-semibold text-sm">
-                    {chara.character.name}
-                  </p>
-                  <p className="text-gray-400 text-xs">{chara.role}</p>
-                </div>
-              ))}
-            </div>
+            <CharacterCarousel characters={characters.slice(0, 12)} />
           ) : (
             <p className="text-gray-400">No characters available.</p>
           )}

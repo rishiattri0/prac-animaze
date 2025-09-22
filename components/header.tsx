@@ -34,7 +34,8 @@ export default function Navbar() {
     { name: "Top Anime", path: "/anime/topanime", protected: true },
     { name: "Airing", path: "/anime", protected: true },
     { name: "Manga", path: "/manga", protected: true },
-    { name: "MyList", path: "/anime/mylist", protected: true },
+    { name: "Anime-List", path: "/anime/mylist", protected: true },
+    { name: "Manga-List", path: "/manga/mangalist", protected: true },
   ];
 
   return (

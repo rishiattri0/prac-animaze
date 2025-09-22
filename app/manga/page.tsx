@@ -3,7 +3,8 @@
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import GradientLoader from "@/components/loader";
-import { RecommendationCarousel } from "@/components/recommendation-carousel"; // 👈 same carousel
+import { RecommendationCarousel } from "@/components/recommendation-carousel";
+import MangaCard from "@/components/MangaCard"; // 👈 new card
 
 // ----------------- TYPES -----------------
 interface Manga {
@@ -13,7 +14,7 @@ interface Manga {
   chapters: number | null;
   volumes: number | null;
   status: string;
-  score?: number | null; // 👈 added score
+  score?: number | null;
 }
 
 interface Recommendation {
@@ -51,7 +52,7 @@ export default function MangaPage() {
           new Map(data.data.map((rec) => [rec.entry[0]?.mal_id, rec])).values()
         );
 
-        setRecommendations(uniqueRecs.slice(0, 10)); // take top 10
+        setRecommendations(uniqueRecs.slice(0, 10));
       } catch (err) {
         console.error("Error fetching manga recommendations:", err);
       } finally {
@@ -152,7 +153,7 @@ export default function MangaPage() {
                   rec.entry[0]?.images?.jpg?.large_image_url ?? "/fallback.jpg",
                 alt: rec.entry[0]?.title ?? "Unknown",
                 code: rec.content,
-                link: `/manga/${rec.entry[0]?.mal_id}`, // 👈 goes to manga details page
+                link: `/manga/${rec.entry[0]?.mal_id}`,
               }))}
             />
           </div>
@@ -166,40 +167,8 @@ export default function MangaPage() {
 
       <main className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6 max-w-6xl mx-auto px-6">
         {mangaList.map((manga) => (
-          <Link href={`/manga/${manga.mal_id}`} key={manga.mal_id}>
-            <div className="bg-indigo-950/40 rounded-xl shadow shadow-indigo-500/40 p-4 flex flex-col hover:scale-105 transition">
-              <div className="w-full aspect-[3/4] overflow-hidden rounded-lg">
-                <img
-                  src={manga.images.jpg.large_image_url}
-                  alt={manga.title}
-                  width={300}
-                  height={400}
-                  className="object-cover w-full h-full"
-                />
-              </div>
-              <h2
-                className="font-bold text-center mt-3 truncate"
-                title={manga.title}
-              >
-                {manga.title}
-              </h2>
-              <p className="text-center text-gray-300">
-                Chapters: {manga.chapters ?? "?"}
-              </p>
-              <p className="text-center text-gray-300">
-                Volumes: {manga.volumes ?? "?"}
-              </p>
-              <p className="text-center text-gray-300">
-                Status: {manga.status}
-              </p>
-              {/* 👇 Score Display */}
-              <p className="text-center text-yellow-400 font-semibold">
-                ⭐ Score: {manga.score ?? "N/A"}
-              </p>
-            </div>
-          </Link>
+          <MangaCard key={manga.mal_id} manga={manga} />
         ))}
-        {/* sentinel for infinite scroll */}
         <div ref={loader} className="h-10" />
       </main>
 

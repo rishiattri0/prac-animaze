@@ -2,9 +2,10 @@ import Link from "next/link";
 
 const links = [
   { title: "Airing", href: "#" },
-  { title: "Top Anime", href: "#" },
-  { title: "My List", href: "#" },
+  { title: "Anime", href: "#" },
   { title: "Manga", href: "#" },
+  { title: "Anime-List", href: "#" },
+  { title: "Manga-List", href: "#" },
 ];
 
 export default function FooterSection() {

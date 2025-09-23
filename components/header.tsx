@@ -31,9 +31,9 @@ export default function Navbar() {
 
   const links = [
     { name: "Home", path: "/", protected: false },
-    { name: "Top Anime", path: "/anime/topanime", protected: true },
-    { name: "Airing", path: "/anime", protected: true },
+    { name: "Anime", path: "/anime/topanime", protected: true },
     { name: "Manga", path: "/manga", protected: true },
+    { name: "Airing", path: "/anime", protected: true },
     { name: "Anime-List", path: "/anime/mylist", protected: true },
     { name: "Manga-List", path: "/manga/mangalist", protected: true },
   ];

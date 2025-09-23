@@ -2,7 +2,8 @@
 
 import { useEffect, useState } from "react";
 import GradientLoader from "@/components/loader";
-import AnimeCard from "@/components/AnimeCard"; // 👈 unified card
+import AnimeCard from "@/components/AnimeCard";
+import Link from "next/link";
 
 interface Anime {
   mal_id: number;

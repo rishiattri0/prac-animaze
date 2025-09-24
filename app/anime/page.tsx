@@ -26,29 +26,35 @@ export default function AnimePage() {
   const [recommendations, setRecommendations] = useState<Recommendation[]>([]);
   const [recLoading, setRecLoading] = useState(true);
 
-  // ----------------- FETCH RECOMMENDATIONS -----------------
+  // ----------------- FETCH AIRING "RECOMMENDATIONS" -----------------
   useEffect(() => {
-    const fetchRecs = async () => {
+    const fetchAiringRecs = async () => {
       try {
-        const res = await fetch(
-          "https://api.jikan.moe/v4/recommendations/anime"
-        );
-        const data: { data: Recommendation[] } = await res.json(); // 👈 type the response
+        const res = await fetch("https://api.jikan.moe/v4/seasons/now");
+        const data = await res.json();
 
-        // ✅ Filter unique by mal_id
-        const uniqueRecs: Recommendation[] = Array.from(
-          new Map(data.data.map((rec) => [rec.entry[0]?.mal_id, rec])).values()
+        // Shuffle & pick 10 to act as recommendations
+        const shuffled = data.data.sort(() => 0.5 - Math.random());
+        setRecommendations(
+          shuffled.slice(0, 10).map((anime: any) => ({
+            entry: [
+              {
+                mal_id: anime.mal_id,
+                title: anime.title,
+                images: anime.images,
+              },
+            ],
+            content: anime.synopsis ?? "Currently Airing Anime",
+          }))
         );
-
-        // ✅ Take only first 20
-        setRecommendations(uniqueRecs.slice(0, 10));
       } catch (err) {
-        console.error("Error fetching recommendations:", err);
+        console.error("Error fetching airing recs:", err);
       } finally {
         setRecLoading(false);
       }
     };
-    fetchRecs();
+
+    fetchAiringRecs();
   }, []);
 
   // ----------------- FETCH SEASONAL ANIME -----------------
